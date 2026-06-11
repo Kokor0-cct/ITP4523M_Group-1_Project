@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard · Premium Living Management System</title>
+    <link rel="stylesheet" href="../CSS/staffStyle.css">
+  
+</head>
+<body class="body-staff">
+
+    <div class="nav">
+        <a href="staff_dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="staff_products.html"><i class="fas fa-chair"></i> Products</a>
+        <a href="staff_materials.html"><i class="fas fa-cubes"></i> Materials</a>
+        <a href="staff_orders.html"><i class="fas fa-truck"></i> Orders</a>
+        <a href="login.html" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="staff-container">
+        <div class="welcome-box">
+            <h1><i class="fas fa-user-check"></i> Welcome back, Mr. Chen</h1>
+            <p>Premium Living Furniture Integrated Hub | Real-time management of products, materials and orders</p>
+            <button class="reset-btn" id="globalResetBtn"><i class="fas fa-database"></i> Reset all demo data to default</button>
+        </div>
+
+        <div class="stats-row" id="statsContainer">
+            <div class="stat-card"><i class="fas fa-couch"></i><div class="number" id="productCount">-</div><div>Furniture Products</div></div>
+            <div class="stat-card"><i class="fas fa-boxes"></i><div class="number" id="materialCount">-</div><div>Raw Materials</div></div>
+            <div class="stat-card"><i class="fas fa-clipboard-list"></i><div class="number" id="orderCount">-</div><div>Total Orders</div></div>
+            <div class="stat-card"><i class="fas fa-clock"></i><div class="number" id="pendingOrderCount">-</div><div>Pending Orders</div></div>
+        </div>
+
+        <div class="menu-card-wrap">
+            <div class="menu-card">
+                <i class="fas fa-chair" style="font-size: 2.5rem; color:#007bff;"></i>
+                <h3>Furniture Products</h3>
+                <p>Add/Edit/Delete products, manage inventory and pricing</p>
+                <a href="staff_products.html">Manage →</a>
+            </div>
+            <div class="menu-card">
+                <i class="fas fa-cubes" style="font-size: 2.5rem; color:#28a745;"></i>
+                <h3>Raw Materials</h3>
+                <p>Monitor stock levels, reorder alerts</p>
+                <a href="staff_materials.html">Manage →</a>
+            </div>
+            <div class="menu-card">
+                <i class="fas fa-truck-fast" style="font-size: 2.5rem; color:#ff8800;"></i>
+                <h3>Order Fulfillment</h3>
+                <p>Update status, tracking number, delivery date</p>
+                <a href="staff_orders.html">Update →</a>
+            </div>
+        </div>
+    </div>
+<script>
+        (function checkAuth() {
+            const isLogged = sessionStorage.getItem('staffLoggedIn');
+            if (!isLogged) {
+                window.location.href = 'login.html';
+            }
+        })();
+
+        const STORAGE_KEYS = {
+            PRODUCTS: 'premium_products',
+            MATERIALS: 'premium_materials',
+            ORDERS: 'premium_orders'
+        };
+
+        const DEFAULT_PRODUCTS = [
+            { id: 1001, name: "Italian Minimalist Leather Sofa", description: "Imported top-grain leather, high resilience foam", price: 5999, stock: 28, unit: "piece" },
+            { id: 1002, name: "North American Walnut Dining Table", description: "Solid wood frame, eco-friendly varnish", price: 3890, stock: 15, unit: "table" },
+            { id: 1003, name: "Ergonomic Office Chair", description: "Breathable mesh, recline and lift", price: 1280, stock: 47, unit: "chair" },
+            { id: 1004, name: "Luxury Sintered Stone Coffee Table", description: "Scratch resistant, modern minimalist", price: 2150, stock: 22, unit: "piece" }
+        ];
+
+        const DEFAULT_MATERIALS = [
+            { id: 2001, name: "North American Red Oak Lumber", description: "FAS grade, thickness 2.5cm", stock: 3200, unit: "sq m", reorderLevel: 600 },
+            { id: 2002, name: "Water-based Paint", description: "Matte clear/white", stock: 420, unit: "liter", reorderLevel: 150 },
+            { id: 2003, name: "DTC Hardware Hinges", description: "304 stainless steel", stock: 8500, unit: "set", reorderLevel: 2000 },
+            { id: 2004, name: "High-density Rebonded Foam", description: "Density 45", stock: 650, unit: "cubic m", reorderLevel: 180 }
+        ];
+
+        const DEFAULT_ORDERS = [
+            { id: 50001, customerName: "Li's Interior Design", total: 12980, orderDate: "2025-04-10", status: "processing", deliveryDate: "2025-05-01", trackingNumber: "SF1092384765", shippingAddress: "33 Wang Chiu Road, Kowloon Bay, HK" },
+            { id: 50002, customerName: "Ms. Zhang (Individual)", total: 3890, orderDate: "2025-04-15", status: "pending", deliveryDate: "2025-05-10", trackingNumber: "", shippingAddress: "500 Hennessy Road, Causeway Bay, HK" },
+            { id: 50003, customerName: "Eco Home Ltd.", total: 21500, orderDate: "2025-04-05", status: "shipped", deliveryDate: "2025-04-28", trackingNumber: "DHLHK8523690", shippingAddress: "3 On Kwan Street, Shek Mun, Shatin, NT" },
+            { id: 50004, customerName: "Mr. Wang (Custom order)", total: 7450, orderDate: "2025-04-18", status: "delivered", deliveryDate: "2025-04-25", trackingNumber: "JTEXPRESS7412", shippingAddress: "123 Des Voeux Road West, Sai Ying Pun, HK" }
+        ];
+
+        function initStorage() {
+            if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
+                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+            }
+            if (!localStorage.getItem(STORAGE_KEYS.MATERIALS)) {
+                localStorage.setItem(STORAGE_KEYS.MATERIALS, JSON.stringify(DEFAULT_MATERIALS));
+            }
+            if (!localStorage.getItem(STORAGE_KEYS.ORDERS)) {
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(DEFAULT_ORDERS));
+            }
+        }
+
+        function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]'); }
+        function getMaterials() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.MATERIALS) || '[]'); }
+        function getOrders() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]'); }
+
+        function resetAllData() {
+            localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+            localStorage.setItem(STORAGE_KEYS.MATERIALS, JSON.stringify(DEFAULT_MATERIALS));
+            localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(DEFAULT_ORDERS));
+            updateStats();
+            alert(" All demo data restored to default (products, materials, orders)");
+        }
+
+        function updateStats() {
+            const products = getProducts();
+            const materials = getMaterials();
+            const orders = getOrders();
+            document.getElementById('productCount').innerText = products.length;
+            document.getElementById('materialCount').innerText = materials.length;
+            document.getElementById('orderCount').innerText = orders.length;
+            const pendingCount = orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
+            document.getElementById('pendingOrderCount').innerText = pendingCount;
+        }
+
+        function logout() {
+            sessionStorage.removeItem('staffLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initStorage();
+            updateStats();
+            const resetBtn = document.getElementById('globalResetBtn');
+            if (resetBtn) resetBtn.addEventListener('click', resetAllData);
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); logout(); });
+        });
+    </script>
+   
+</body>
+</html>

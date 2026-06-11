@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raw Materials · Premium Living Staff System</title>
+    <link rel="stylesheet" href="../CSS/staffStyle.css">
+  
+</head>
+<body class="body-staff">
+    <div class="nav">
+        <a href="staff_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="staff_products.html"><i class="fas fa-chair"></i> Products</a>
+        <a href="staff_materials.html" class="active"><i class="fas fa-cubes"></i> Materials</a>
+        <a href="staff_orders.html"><i class="fas fa-truck"></i> Orders</a>
+        <a href="#" id="logoutNav"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="staff-container">
+        <div class="table-box">
+            <div class="table-tools">
+                <h2><i class="fas fa-wood"></i> Raw Materials Inventory & Threshold Alerts</h2>
+                <button class="btn-add" id="openAddMaterialBtn"><i class="fas fa-plus"></i> Add Material</button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="materialsTable">
+                    <thead><tr><th>ID</th><th>Material Name</th><th>Description</th><th>Stock</th><th>Unit</th><th>Reorder Level</th><th>Alert Status</th><th>Actions</th></tr></thead>
+                    <tbody id="materialsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="materialModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle"><i class="fas fa-cube"></i> Material Information</h3>
+            <input type="hidden" id="materialId">
+            <label>Material Name *</label><input type="text" id="matName">
+            <label>Description</label><textarea id="matDesc" rows="2"></textarea>
+            <label>Stock Quantity *</label><input type="number" id="matStock">
+            <label>Unit</label><input type="text" id="matUnit" placeholder="e.g., cubic meter / kg">
+            <label>Reorder Level</label><input type="number" id="matReorder" value="100">
+            <div class="modal-footer">
+                <button class="btn-cancel" id="closeModalBtn">Cancel</button>
+                <button class="btn-save" id="saveMaterialBtn">Save Material</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (!sessionStorage.getItem('staffLoggedIn')) window.location.href = 'login.html';
+        const STORAGE_KEY = 'premium_materials';
+        let materials = [];
+
+        function loadMaterials() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) materials = JSON.parse(stored);
+            else {
+                const defaultMats = [
+                    { id: 2001, name: "North American Red Oak Lumber", description: "FAS grade, thickness 2.5cm", stock: 3200, unit: "sq m", reorderLevel: 600 },
+                    { id: 2002, name: "Water-based Paint", description: "Matte clear/white", stock: 420, unit: "liter", reorderLevel: 150 },
+                    { id: 2003, name: "DTC Hardware Hinges", description: "304 stainless steel", stock: 8500, unit: "set", reorderLevel: 2000 },
+                    { id: 2004, name: "High-density Rebonded Foam", description: "Density 45", stock: 650, unit: "cubic m", reorderLevel: 180 }
+                ];
+                materials = defaultMats;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(materials));
+            }
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('materialsTableBody');
+            tbody.innerHTML = '';
+            materials.forEach(m => {
+                const isLow = m.stock <= m.reorderLevel;
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = m.id;
+                row.insertCell(1).innerHTML = `<strong>${escapeHtml(m.name)}</strong>`;
+                row.insertCell(2).innerText = (m.description || '').substring(0,30);
+                row.insertCell(3).innerText = m.stock;
+                row.insertCell(4).innerText = m.unit;
+                row.insertCell(5).innerText = m.reorderLevel;
+                row.insertCell(6).innerHTML = isLow ? '<span class="warning-level"><i class="fas fa-exclamation-triangle"></i> Below threshold, need restock</span>' : '<span style="color:green;">Sufficient stock</span>';
+                const actionCell = row.insertCell(7);
+                actionCell.className = "action-icons";
+                actionCell.innerHTML = `<i class="fas fa-edit edit-icon" data-id="${m.id}"></i><i class="fas fa-trash-alt delete-icon" data-id="${m.id}"></i>`;
+            });
+            document.querySelectorAll('.edit-icon').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    const id = parseInt(icon.getAttribute('data-id'));
+                    openEditModal(id);
+                });
+            });
+            document.querySelectorAll('.delete-icon').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    const id = parseInt(icon.getAttribute('data-id'));
+                    if(confirm('Delete this raw material? Related production records may be affected.')) deleteMaterial(id);
+                });
+            });
+        }
+
+        function deleteMaterial(id) {
+            materials = materials.filter(m => m.id !== id);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(materials));
+            renderTable();
+        }
+
+        function openEditModal(id) {
+            const mat = materials.find(m => m.id === id);
+            if(mat) {
+                document.getElementById('materialId').value = mat.id;
+                document.getElementById('matName').value = mat.name;
+                document.getElementById('matDesc').value = mat.description || '';
+                document.getElementById('matStock').value = mat.stock;
+                document.getElementById('matUnit').value = mat.unit;
+                document.getElementById('matReorder').value = mat.reorderLevel;
+                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Material';
+                document.getElementById('materialModal').style.display = 'flex';
+            }
+        }
+
+        function addNewMaterial() {
+            document.getElementById('materialId').value = '';
+            document.getElementById('matName').value = '';
+            document.getElementById('matDesc').value = '';
+            document.getElementById('matStock').value = '';
+            document.getElementById('matUnit').value = 'kg';
+            document.getElementById('matReorder').value = '100';
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus"></i> Add Material';
+            document.getElementById('materialModal').style.display = 'flex';
+        }
+
+        function saveMaterial() {
+            const id = document.getElementById('materialId').value;
+            const name = document.getElementById('matName').value.trim();
+            const desc = document.getElementById('matDesc').value.trim();
+            const stock = parseInt(document.getElementById('matStock').value);
+            const unit = document.getElementById('matUnit').value.trim() || 'kg';
+            const reorderLevel = parseInt(document.getElementById('matReorder').value);
+            if (!name || isNaN(stock)) { alert("Material name and stock are required"); return; }
+            if (id) {
+                const idx = materials.findIndex(m => m.id == id);
+                if(idx !== -1) materials[idx] = { ...materials[idx], name, description: desc, stock, unit, reorderLevel };
+            } else {
+                const maxId = materials.length > 0 ? Math.max(...materials.map(m => m.id)) : 2000;
+                materials.push({ id: maxId+1, name, description: desc, stock, unit, reorderLevel });
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(materials));
+            closeModal();
+            renderTable();
+        }
+
+        function closeModal() { document.getElementById('materialModal').style.display = 'none'; }
+        function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+        function logout() { sessionStorage.removeItem('staffLoggedIn'); window.location.href = 'login.html'; }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadMaterials();
+            document.getElementById('openAddMaterialBtn').addEventListener('click', addNewMaterial);
+            document.getElementById('saveMaterialBtn').addEventListener('click', saveMaterial);
+            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+            document.getElementById('logoutNav').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+            window.onclick = (e) => { if(e.target === document.getElementById('materialModal')) closeModal(); };
+        });
+    </script>
+</body>
+</html>

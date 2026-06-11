@@ -1,0 +1,704 @@
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:system-ui;}
+
+
+body{
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    background:#f5f5f5;
+    padding:20px;
+    padding-top:70px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+.home-container {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+}
+.home-title {
+    color: #2c3e50;
+    margin-bottom: 30px;
+}
+.home-desc {
+    font-size: 18px;
+    color: #34495e;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+.home-card{
+    width: 800px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    padding: 15px 30px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.nav-btn:hover {
+    background-color: #2980b9;
+}
+.login{
+    width:90%;
+    max-width:320px;
+    padding:24px;
+    background:#fff;
+    border-radius:8px;
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+
+.role{
+    text-align:center;
+    margin:16px 0;
+    display:flex;
+    justify-content:center;
+    gap:20px;}
+
+.item{
+    margin:12px 0;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    margin-top:4px;}
+
+button{
+    width:100%;
+    padding:10px;
+    background:#007bff;
+    color:white;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+#tip{
+    color:red;
+    text-align:center;
+    margin-top:10px;
+    font-size:14px;
+}
+.header{
+    text-align: center;
+    margin-bottom:0px;
+}
+.header h1{
+    font-size:24px;
+    color:#333;
+}
+
+.body-customer{
+    padding:20px;
+    padding-top:70px;
+}
+
+.nav{
+    position:fixed; 
+    top:0;
+    left:0;
+    width:100%;
+    height:60px;
+    background:#fff;
+    box-shadow:0 2px 5px #00000010;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    z-index:999;
+}
+.nav a{
+    text-decoration:center;
+    color:#333;
+    font-size:18px;
+    cursor:pointer;
+    padding: 12px 12px;
+}
+.nav a:hover{
+    color:#007bff; 
+    background-color: #dce6f1;
+}
+.nav .active{
+    color:#007bff; 
+    font-weight:bold;
+}
+.login-button{
+    width:100%;
+    padding:10px;
+    background:#007bff;
+    color:white;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+}
+.back-home-btn {
+    padding: auto auto ;
+    font-size: 14px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+.back-home-btn:hover {
+    background-color: #2980b9;
+}
+/* ==================== 浏览商品（prodcuList.html） ==================== */
+
+
+.goods-box{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap:20px;
+    max-width:1000px;
+    margin:auto auto;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 25px;
+    
+    
+}
+
+.card{
+    background:#fff;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 2px 5px #00000010;
+    
+    
+}
+.card-img{
+    width:100%;
+    height:180px;
+    background:#ddd;
+    display:grid;
+    place-items:center;
+    color:#666;
+}
+.card-info{
+    padding:15px;
+}
+.card-name{
+    font-size:16px;
+    margin-bottom:8px;
+    color:#333;
+}
+.card-price{
+    font-size:18px;
+    color:#007bff;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+.card-btn{
+    width:100%;
+    padding:8px;
+    background:#007bff;
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+}
+.card-btn:active{
+    background:#005cbb;
+}
+ /* 排序按钮样式 */
+.sort-controls {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    display: flex;
+    gap: 10px;
+    padding: 0 25px;
+}
+.sort-btn {
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.sort-btn:hover {
+    background: #005cbb;
+}
+
+.header {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 25px;
+}
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+.card-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    color: #666;
+}
+.stock-out {
+    color: #e74c3c !important;
+    font-weight: bold;
+}
+
+/* ==================== 查看我的订单(order.html） ==================== */
+
+.table-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  min-width: 1100px;
+  padding: 25px;
+  width: 80%;
+    margin: auto auto; 
+  text-align: center;
+  
+}
+.table,td,th{
+    border: 1px solid #005cbb;
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    
+    
+}
+table{
+    width:95%;
+    border-collapse: collapse;
+    margin: auto auto;
+    text-align: center;
+    
+}
+td
+{
+    padding:15px;
+    text-align: center;
+}
+th
+{
+	background: #3498db;
+  color: white;
+}
+.button-orderdel{
+    width:80%;
+    padding:13px;
+    background:#ff0000;
+    color:white;
+    border:none;
+    font-weight: bold; 
+    border-radius:4px;
+    cursor:pointer;
+    font-size: 16px
+}
+.button-orderdel:hover {
+    background: #d60000;
+}
+.button-orderdel:active {
+    background: #b40000;
+}
+.tag-waitshipping { 
+    background: #0052bd;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white; 
+}
+.tag-shipped { 
+    background: #006eff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white; 
+}
+.tag-arrive { 
+    background: #00ce11;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white; 
+}
+.tag-processing { 
+    background: #ffa600;
+    padding: auto 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white; 
+}
+.tag-pending { 
+    background: #9b6500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white; 
+}
+
+
+.sortable {
+    padding:15px;
+    background:#0066ff;
+    color:white;
+    border:none;
+    font-weight: bold; 
+    border-radius:4px;
+    font-size: 17px
+}
+
+.sort-btn-group {
+    display: flex;
+    gap: 10px; 
+    margin-bottom: 5px; 
+    justify-content: flex-start; 
+    padding:25px
+}
+
+.sortable:hover {
+    background: #005cbb;
+}
+.sortable:active {
+    background: #004aa0;
+}
+#orderTable td:nth-child(4) {
+    width: 180px;
+    word-wrap: break-word;
+    word-break: break-all;
+    max-width: 200px;
+    vertical-align: middle;
+    padding: 12px 8px;
+}
+/* ==================== 我的账号(myAccount.html） ==================== */
+.container {
+    max-width: 800px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.form-card, .profileForm-card {
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+.form-card h3, .profileForm-card h3 {
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+.form-group {
+    margin-bottom: 18px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #555;
+}
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border 0.3s;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+}
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.btn-primary {
+    background: #007bff;
+    color: #fff;
+}
+.btn-primary:hover {
+    background: #005cbb;
+}
+.btn-primary:active {
+    background: #004aa0;
+}
+
+
+/* ==================== 物品详情(furnitureInfo.html） ==================== */
+.product-detail-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 70px auto 20px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+
+.back-btn {
+    position: fixed;
+    top: 70px;
+    left: 20px;
+    padding: 8px 16px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 998;
+}
+.back-btn:hover {
+    background: #5a6268;
+}
+
+
+.product-img-wrapper {
+    width: 100%;
+    height: 400px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.product-info {
+    padding: 10px;
+}
+.product-name {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+.product-desc {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+.product-price {
+    font-size: 24px;
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.product-stock {
+    font-size: 16px;
+    color: #27ae60;
+    margin-bottom: 20px;
+}
+
+.stock-out {
+    color: #e74c3c !important;
+    font-weight: bold;
+}
+
+
+.custom-type {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    display: flex; 
+    gap: 20px;
+    align-items: center; 
+}
+.custom-type label {
+    font-weight: bold;
+    cursor: pointer;
+    display: flex; 
+    align-items: center;
+    gap: 5px;
+}
+
+/* 定制化选项 */
+.custom-option {
+    margin-bottom: 15px;
+}
+.custom-option label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555;
+}
+.custom-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.custom-select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    color: #999;
+}
+
+
+.quantity-control {
+    margin-bottom: 20px;
+}
+.quantity-control label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555;
+}
+.quantity-input {
+    width: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.add-cart-btn {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.add-cart-btn:hover {
+    background: #005cbb;
+}
+.add-cart-btn:active {
+    background: #004aa0;
+}
+
+.add-cart-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+
+/* ==================== 购物车(cart.html） ==================== */
+.cart-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 70px auto 20px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.cart-header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.cart-table th, .cart-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+.cart-table th {
+    background: #007bff;
+    color: white;
+}
+.cart-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.cancel-btn {
+    padding: 8px 16px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.cancel-btn:hover {
+    background: #c82333;
+}
+.submit-btn {
+    padding: 12px 24px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    float: right;
+}
+.submit-btn:hover {
+    background: #005cbb;
+}
+.empty-tip {
+    text-align: center;
+    padding: 40px 0;
+    color: #666;
+    font-size: 18px;
+}
+
+
+
+/*-----------------------------------------------------------------------*/
+
+
+
+
+

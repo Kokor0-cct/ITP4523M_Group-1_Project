@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Furniture Products · Premium Living Staff System</title>
+    <link rel="stylesheet" href="../CSS/staffStyle.css">
+
+</head>
+<body class="body-staff">
+    <div class="nav">
+        <a href="staff_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="staff_products.html" class="active"><i class="fas fa-chair"></i> Products</a>
+        <a href="staff_materials.html"><i class="fas fa-cubes"></i> Materials</a>
+        <a href="staff_orders.html"><i class="fas fa-truck"></i> Orders</a>
+        <a href="#" id="logoutNav"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="staff-container">
+        <div class="table-box">
+            <div class="table-tools">
+                <h2><i class="fas fa-boxes"></i> Furniture Products List</h2>
+                <button class="btn-add" id="openAddProductBtn"><i class="fas fa-plus"></i> Add Product</button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="productsTable">
+                    <thead>
+                        <tr><th>ID</th><th>Product Name</th><th>Description</th><th>Price (HKD)</th><th>Stock</th><th>Unit</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="productsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle"><i class="fas fa-pen-alt"></i> Product Information</h3>
+            <input type="hidden" id="productId">
+            <label>Product Name *</label>
+            <input type="text" id="prodName" placeholder="e.g., Nordic Minimalist Dining Table">
+            <label>Description</label>
+            <textarea id="prodDesc" rows="2" placeholder="Material, craftsmanship etc."></textarea>
+            <label>Price (HKD) *</label>
+            <input type="number" id="prodPrice" step="0.01">
+            <label>Stock Quantity *</label>
+            <input type="number" id="prodStock">
+            <label>Unit</label>
+            <input type="text" id="prodUnit" placeholder="piece/set/chair">
+            <div class="modal-footer">
+                <button class="btn-cancel" id="closeModalBtn">Cancel</button>
+                <button class="btn-save" id="saveProductBtn">Save Product</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            if (!sessionStorage.getItem('staffLoggedIn')) {
+                window.location.href = 'login.html';
+            }
+        })();
+
+        const STORAGE_KEY = 'premium_products';
+        let products = [];
+
+        function loadProducts() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) products = JSON.parse(stored);
+            else {
+                const defaultProds = [
+                    { id: 1001, name: "Italian Minimalist Leather Sofa", description: "Imported top-grain leather, high resilience foam", price: 5999, stock: 28, unit: "piece" },
+                    { id: 1002, name: "North American Walnut Dining Table", description: "Solid wood frame, eco-friendly varnish", price: 3890, stock: 15, unit: "table" },
+                    { id: 1003, name: "Ergonomic Office Chair", description: "Breathable mesh, recline and lift", price: 1280, stock: 47, unit: "chair" },
+                    { id: 1004, name: "Luxury Sintered Stone Coffee Table", description: "Scratch resistant, modern minimalist", price: 2150, stock: 22, unit: "piece" }
+                ];
+                products = defaultProds;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+            }
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('productsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            products.forEach(p => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = p.id;
+                row.insertCell(1).innerHTML = `<strong>${escapeHtml(p.name)}</strong>`;
+                row.insertCell(2).innerText = p.description.length > 40 ? p.description.substring(0,37)+'...' : p.description;
+                row.insertCell(3).innerText = `HK$ ${p.price.toFixed(2)}`;
+                row.insertCell(4).innerHTML = `<span class="badge" style="background:${p.stock <= 5 ? '#dc3545' : '#28a745'}">${p.stock}</span>`;
+                row.insertCell(5).innerText = p.unit;
+                const actionCell = row.insertCell(6);
+                actionCell.className = "action-icons";
+                actionCell.innerHTML = `
+                    <i class="fas fa-edit edit-icon" data-id="${p.id}"></i>
+                    <i class="fas fa-trash-alt delete-icon" data-id="${p.id}"></i>
+                `;
+            });
+            document.querySelectorAll('.edit-icon').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    const id = parseInt(icon.getAttribute('data-id'));
+                    openEditProductModal(id);
+                });
+            });
+            document.querySelectorAll('.delete-icon').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    const id = parseInt(icon.getAttribute('data-id'));
+                    if (confirm('Delete this product? This action cannot be undone.')) deleteProductById(id);
+                });
+            });
+        }
+
+        function deleteProductById(id) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+            renderTable();
+        }
+
+        function openEditProductModal(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            document.getElementById('productId').value = product.id;
+            document.getElementById('prodName').value = product.name;
+            document.getElementById('prodDesc').value = product.description;
+            document.getElementById('prodPrice').value = product.price;
+            document.getElementById('prodStock').value = product.stock;
+            document.getElementById('prodUnit').value = product.unit;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Product';
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        function addNewProduct() {
+            document.getElementById('productId').value = '';
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodDesc').value = '';
+            document.getElementById('prodPrice').value = '';
+            document.getElementById('prodStock').value = '';
+            document.getElementById('prodUnit').value = 'piece';
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add Product';
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        function saveProductHandler() {
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('prodName').value.trim();
+            const description = document.getElementById('prodDesc').value.trim();
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const stock = parseInt(document.getElementById('prodStock').value);
+            const unit = document.getElementById('prodUnit').value.trim() || 'piece';
+            if (!name || isNaN(price) || isNaN(stock)) {
+                alert("Please fill in product name, price and stock correctly.");
+                return;
+            }
+            if (id) {
+                const idx = products.findIndex(p => p.id == id);
+                if (idx !== -1) {
+                    products[idx] = { ...products[idx], name, description, price, stock, unit };
+                }
+            } else {
+                const maxId = products.length > 0 ? Math.max(...products.map(p => p.id)) : 1000;
+                const newId = maxId + 1;
+                products.push({ id: newId, name, description, price, stock, unit });
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+            closeModal();
+            renderTable();
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function logout() {
+            sessionStorage.removeItem('staffLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+            document.getElementById('openAddProductBtn').addEventListener('click', addNewProduct);
+            document.getElementById('saveProductBtn').addEventListener('click', saveProductHandler);
+            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+            document.getElementById('logoutNav').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+            window.onclick = function(e) { if (e.target === document.getElementById('productModal')) closeModal(); };
+        });
+    </script>
+</body>
+</html>

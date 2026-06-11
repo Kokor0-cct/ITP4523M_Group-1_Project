@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Personal Profile Management</title> 
+    <link rel="stylesheet" href="../CSS/style.css">
+
+</head>
+<body class="body-customer"> 
+
+    <div class="nav">
+        <a onclick="productPage()">Browse products</a>
+        <a onclick="cartPage()">shopping cart</a>
+        <a onclick="orderPage()">My Orders</a>
+        <a onclick="AccountPage()" class="active">My account</a>
+        <a onclick="logout()">Logout</a>
+    </div>
+
+
+    <div class="container">
+        <h1>Personal Profile Management</h1>
+
+
+        <div class="form-card" >
+            <h3>Customer Basic Information</h3>
+            <div class="form-group">
+                <label>Customer ID</label>
+                <input type="text" id="customerId" value="CUS-001" readonly>
+            </div>
+            <div class="form-group">
+                <label>User Email</label>
+                <input type="text" id="useremail" value="customer-001@gmail.com" readonly>
+            </div>
+            <div class="form-group">
+                <label>Contact Phone</label>
+                <input type="text" id="phone" value="2526 2627" readonly>
+            </div>
+            <div class="form-group">
+                <label>Customer Address</label>
+                <input type="text" id="address" value="Floor 514, Block B, Weiti Si, Shangshui District, Victoria City, Xiangjiang Province" readonly>
+            </div>
+        </div>
+        
+
+        <div class="profileForm-card">
+            <h3>Update Personal Profile</h3>
+            <form id="profileForm" onsubmit="return updateProfile()">
+                <div class="form-group">
+                    <label for="password">Login Password</label>
+                    <input type="password" id="password" name="password" placeholder="Please enter new password (8-12 characters, including letters and numbers)" pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{8,12}">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Please re-enter new password">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Contact Phone</label>
+                    <input type="text" id="modify-phone" name="phone" placeholder="Please enter 8-digit phone number" pattern="^[1-9]\d{7}$">
+                </div>
+                <div class="form-group">
+                    <label for="address">Customer Address</label>
+                    <input type="text" id="modify-address" name="address" placeholder="Please enter detailed shipping address">
+                </div>
+                
+                    <button type="submit" class="btn btn-primary">Save Updates</button>
+                     
+
+                    <button type="reset" class="btn btn-primary" style="background: #6c757d; margin: 2px;">Reset Form</button>
+               
+                <div id="message"></div> 
+            </form>
+        </div>
+    </div>
+
+
+
+    <script>
+        function logout(){
+            if(confirm('Are you sure you want to log out?')){
+
+                localStorage.removeItem('currentUser');
+                alert('Logged out successfully! Redirecting to login page');
+                window.location.href = 'customerLogin.html';
+            }
+        }
+
+        function productPage(){
+            window.location.href = 'prodecuList.html';
+        }
+
+        function AccountPage(){
+            window.location.href = 'myAccount.html';
+        }
+
+        function orderPage(){
+            window.location.href = 'order.html';
+        }
+
+        function cartPage(){
+            window.location.href = 'cart.html'; 
+        }
+
+        function updateProfile() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('modify-address').value;
+            const message = document.getElementById('message');
+
+            if (password !== confirmPassword) {
+                alert("The two passwords entered do not match");
+                return false;
+            }
+            
+            if(address.length < 5) {
+                message.className = 'error';
+                alert("Address cannot be less than 5 characters, please fill in the detailed address!");
+                return false;
+            }
+
+            if (password === "") {
+                alert("Password cannot be empty");
+                return false;
+            }
+
+            alert("Profile updated successfully!");
+        }
+    </script>
+
+
+
+</body>
+</html>

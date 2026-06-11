@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management · Premium Living Staff System</title>
+    <link rel="stylesheet" href="../CSS/staffStyle.css">
+
+</head>
+<body class="body-staff">
+    <div class="nav">
+        <a href="staff_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="staff_products.html"><i class="fas fa-chair"></i> Products</a>
+        <a href="staff_materials.html"><i class="fas fa-cubes"></i> Materials</a>
+        <a href="staff_orders.html" class="active"><i class="fas fa-truck"></i> Orders</a>
+        <a href="#" id="logoutNav"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="staff-container">
+        <div class="table-box">
+            <h2><i class="fas fa-pen-ruler"></i> Customer Orders & Real-time Updates</h2>
+            <p style="color: #666; margin-bottom: 16px;">Staff can modify order status, estimated delivery date, tracking number. Click "Update Record" to apply changes.</p>
+            <table class="order-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f2f2f2;">
+                        <th>Order ID</th><th>Customer</th><th>Total Amount</th><th>Order Date</th><th>Status</th><th>Est. Delivery Date</th><th>Tracking Number</th><th>Shipping Address</th><th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        if (!sessionStorage.getItem('staffLoggedIn')) window.location.href = 'login.html';
+        const STORAGE_KEY = 'premium_orders';
+        let orders = [];
+
+        function loadOrders() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) orders = JSON.parse(stored);
+            else {
+                const defaultOrders = [
+                    { id: 50001, customerName: "Li's Interior Design", total: 12980, orderDate: "2025-04-10", status: "processing", deliveryDate: "2025-05-01", trackingNumber: "SF1092384765", shippingAddress: "33 Wang Chiu Road, Kowloon Bay, HK" },
+                    { id: 50002, customerName: "Ms. Zhang (Individual)", total: 3890, orderDate: "2025-04-15", status: "pending", deliveryDate: "2025-05-10", trackingNumber: "", shippingAddress: "500 Hennessy Road, Causeway Bay, HK" },
+                    { id: 50003, customerName: "Eco Home Ltd.", total: 21500, orderDate: "2025-04-05", status: "shipped", deliveryDate: "2025-04-28", trackingNumber: "DHLHK8523690", shippingAddress: "3 On Kwan Street, Shek Mun, Shatin, NT" },
+                    { id: 50004, customerName: "Mr. Wang (Custom order)", total: 7450, orderDate: "2025-04-18", status: "delivered", deliveryDate: "2025-04-25", trackingNumber: "JTEXPRESS7412", shippingAddress: "123 Des Voeux Road West, Sai Ying Pun, HK" }
+                ];
+                orders = defaultOrders;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+            }
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = '';
+            orders.forEach(order => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerHTML = `<strong>#${order.id}</strong>`;
+                row.insertCell(1).innerText = order.customerName;
+                row.insertCell(2).innerText = `HK$ ${order.total.toFixed(2)}`;
+                row.insertCell(3).innerText = order.orderDate;
+
+                const statusSelect = document.createElement('select');
+                const statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+                statuses.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.innerText = s === 'pending' ? 'Pending' : s === 'processing' ? 'Processing' : s === 'shipped' ? 'Shipped' : s === 'delivered' ? 'Delivered' : 'Cancelled';
+                    if (order.status === s) opt.selected = true;
+                    statusSelect.appendChild(opt);
+                });
+                statusSelect.className = 'order-status-select';
+                statusSelect.setAttribute('data-id', order.id);
+                const statusCell = row.insertCell(4);
+                statusCell.appendChild(statusSelect);
+
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.value = order.deliveryDate || '';
+                dateInput.className = 'delivery-date-input';
+                dateInput.setAttribute('data-id', order.id);
+                row.insertCell(5).appendChild(dateInput);
+
+                const trackInput = document.createElement('input');
+                trackInput.type = 'text';
+                trackInput.value = order.trackingNumber || '';
+                trackInput.placeholder = 'Enter tracking number';
+                trackInput.className = 'tracking-input';
+                trackInput.setAttribute('data-id', order.id);
+                row.insertCell(6).appendChild(trackInput);
+
+                row.insertCell(7).innerHTML = `<small>${escapeHtml(order.shippingAddress.substring(0, 30))}</small>`;
+
+                const btn = document.createElement('button');
+                btn.innerText = 'Update Record';
+                btn.className = 'update-btn';
+                btn.setAttribute('data-id', order.id);
+                btn.addEventListener('click', () => updateOrder(order.id));
+                row.insertCell(8).appendChild(btn);
+            });
+        }
+
+        function updateOrder(orderId) {
+            const rows = document.querySelectorAll('#ordersTableBody tr');
+            let targetRow = null;
+            for (let row of rows) {
+                if (row.querySelector('.update-btn')?.getAttribute('data-id') == orderId) {
+                    targetRow = row;
+                    break;
+                }
+            }
+            if (!targetRow) return;
+            const newStatus = targetRow.querySelector('.order-status-select').value;
+            const newDeliveryDate = targetRow.querySelector('.delivery-date-input').value;
+            const newTracking = targetRow.querySelector('.tracking-input').value.trim();
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = newStatus;
+                orders[orderIndex].deliveryDate = newDeliveryDate;
+                orders[orderIndex].trackingNumber = newTracking;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+                alert(`Order #${orderId} updated! Status: ${newStatus}, Tracking: ${newTracking || 'not set'}`);
+                renderOrders();
+            } else {
+                alert("Order not found");
+            }
+        }
+
+        function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+        function logout() { sessionStorage.removeItem('staffLoggedIn'); window.location.href = 'login.html'; }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadOrders();
+            document.getElementById('logoutNav').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+        });
+    </script>
+</body>
+</html>

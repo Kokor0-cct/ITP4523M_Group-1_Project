@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html ;charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/style.css">
+    <title>Premium Living Management System - </title>
+
+    <style>
+        .background_img{
+            background-image: url(img/background.png);
+            background-size: cover;    
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed; 
+        }
+    </style>
+</head>
+<body class="background_img">
+    <div class="home-card">
+        <div class="home-container">
+            <h1 class="home-title">Premium Living Management System</h1>
+            <p class="home-desc">
+                Welcome to the Premium Living Management System!
+                This system provides dedicated management functions for employees and customers.
+                Employees can manage core business functions such as products, materials, and orders, while customers can view product lists, material information, and order status.
+                Please select your login identity to log in to the corresponding system:
+            </p>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="window.location.href='customer/customerLogin.html'" >Customer Login</button>
+                <button class="nav-btn" onclick="window.location.href='staff/login.html'">Staff Login</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
