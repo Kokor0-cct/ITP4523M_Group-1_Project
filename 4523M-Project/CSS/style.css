@@ -275,6 +275,11 @@ button{
 
 /* ==================== 查看我的订单(order.html） ==================== */
 
+ .btn-box {
+    display: flex;
+    gap: 10px; /* 按钮之间固定间距 */
+    align-items: center;
+  }
 .table-card {
   background: white;
   border-radius: 8px;
