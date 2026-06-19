@@ -213,13 +213,13 @@ button{
     margin-bottom:8px;
     color:#333;
 }
-.card-price{
+.card-price {
     font-size:18px;
     color:#007bff;
     font-weight:bold;
     margin-bottom:10px;
 }
-.card-btn{
+.card-btn {
     width:100%;
     padding:8px;
     background:#007bff;
@@ -228,10 +228,13 @@ button{
     border-radius:4px;
     cursor:pointer;
 }
-.card-btn:active{
-    background:#005cbb;
+.card-btn:hover {
+    background: #005cbb ;
 }
- /* 排序按钮样式 */
+.card-btn:active {
+    background:#0052a3 ;
+}
+
 .sort-controls {
     width: 90%;
     max-width: 1200px;
@@ -250,7 +253,10 @@ button{
     font-size: 14px;
 }
 .sort-btn:hover {
-    background: #005cbb;
+    background: #005cbb ;
+}
+.sort-btn:active {
+    background:#0052a3 ;
 }
 
 .header {
@@ -267,10 +273,6 @@ button{
     background: #cccccc;
     cursor: not-allowed;
     color: #666;
-}
-.stock-out {
-    color: #e74c3c !important;
-    font-weight: bold;
 }
 
 /* ==================== 查看我的订单(order.html） ==================== */
