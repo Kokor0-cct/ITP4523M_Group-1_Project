@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Browsing</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <div class="nav">
+        <a onclick="productPage()">Browse products</a>
+        <a onclick="cartPage()">Shopping Cart</a>
+        <a class="active" onclick="orderPage()">My Orders</a>
+        <a onclick="AccountPage()">My Account</a>
+        <a onclick="logout()">Logout</a>
+    </div>
+
+    <div class="table-card">
+        <div class="header">
+            <h1>Order List</h1>
+        </div>
+        <div class="sort-btn-group">
+            <button class="sortable" onclick="sortTable(0)">Sort by Order ID</button>
+            <button class="sortable" onclick="sortTable(2)">Sort by Date</button>
+        </div>
+        
+        <table id="orderTable">
+            <thead>
+            <tr class="orderTable thead">
+                <th>Order ID</th>
+                <th>Customer ID</th>
+                <th>Order Date</th>
+                <th>Furniture Name</th>
+                <th>Customization Info</th>
+                <th>Quantity</th>
+                <th>Total Amount</th>
+                <th>Delivery Date</th>
+                <th>Order Status</th>
+                <th>Operation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ORD004</td>
+                <td>CUS-001</td>
+                <td>2025-12-21</td>
+                <td>File Cabinet</td>
+                <td>Metal, Plastic</td>
+                <td>1</td>
+                <td>899</td>
+                <td>2026-12-28</td>
+                <td><span class="tag-shipped">In Transit</span></td>
+                <td><button class="button-orderdel" onclick="del(this)">Delete Order</button></td>
+            </tr>
+            <tr>
+                <td>ORD001</td>
+                <td>CUS-001</td>
+                <td>2025-12-12</td>
+                <td>File Cabinet</td>
+                <td>None</td>
+                <td>1</td>
+                <td>899</td>
+                <td>2025-12-20</td>
+                <td><span class="tag-arrive">Delivered</span></td>
+                <td><button class="button-orderdel" onclick="del(this)">Delete Order</button></td>
+            </tr>
+            <tr>
+                <td>ORD002</td>
+                <td>CUS-001</td>
+                <td>2025-12-24</td>
+                <td>Dining Table</td>
+                <td>None</td>
+                <td>1</td>
+                <td>1299</td>
+                <td>2025-12-30</td>
+                <td><span class="tag-waitshipping">Unshipped</span></td>
+                <td><button class="button-orderdel" onclick="del(this)">Delete Order</button></td>
+            </tr>
+            <tr>
+                <td>ORD003</td>
+                <td>CUS-001</td>
+                <td>2025-12-26</td>
+                <td>Bed</td>
+                <td>Oak, Birch, Pine</td>
+                <td>1</td>
+                <td>1899</td>
+                <td>2025-12-31</td>
+                <td><span class="tag-waitshipping">Unshipped</span></td>
+                <td><button class="button-orderdel" onclick="del(this)">Delete Order</button></td>
+            </tr>
+            <tr>
+                <td>ORD003</td>
+                <td>CUS-001</td>
+                <td>2025-12-26</td>
+                <td>Sofa</td>
+                <td>Oak, Linen, Birch, Two-seater</td>
+                <td>1</td>
+                <td>2899</td>
+                <td>2025-12-31</td>
+                <td><span class="tag-processing">In Production</span></td>
+                <td><button class="button-orderdel" onclick="del(this)">Delete Order</button></td>
+            </tr>
+            <tr>
+                <td>ORD005</td>
+                <td>CUS-001</td>     
+                <td>2025-12-28</td>
+                <td>Bed</td>
+                <td>Oak, Birch, Pine</td>
+                <td>1</td>
+                <td>1899</td>
+                <td>2025-12-30</td>
+                <td><span class="tag-pending">Pending</span></td>
+                <td><button class="button-orderdel" onclick="del(this)">Delete Order</button></td>
+            </tr>
+          
+        </tbody>
+        </table>
+        <p style="text-align: left; ">Today is: 2025-12-28</p>
+    </div>
+
+    <script>
+        function logout(){
+            if(confirm('Are you sure you want to log out?')){
+                alert('Logout successful! Returning to login page shortly');
+                window.location.href = 'customerLogin.html';
+            }
+        }
+
+        function productPage(){
+            window.location.href = 'prodecuList.html';
+        }
+
+        function AccountPage(){
+            window.location.href = 'myAccount.html';
+        }
+
+        function orderPage(){
+            window.location.href = 'order.html';
+        }
+
+        function cartPage(){
+            window.location.href = 'cart.html'; 
+        }
+
+       let sortAsc = true;
+
+        function sortTable(columnIndex) {
+            const table = document.getElementById("orderTable");
+            const tbody = table.querySelector("tbody");
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+
+            rows.sort((a, b) => {
+                const cellA = a.cells[columnIndex].textContent.trim();
+                const cellB = b.cells[columnIndex].textContent.trim();
+
+                if (columnIndex === 0) {
+                    return sortAsc ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                } else if (columnIndex === 2) {
+                    const dateA = new Date(cellA);
+                    const dateB = new Date(cellB);
+                    return sortAsc ? dateA - dateB : dateB - dateA;
+                }
+                return 0;
+            });
+
+            tbody.innerHTML = "";
+            rows.forEach(row => tbody.appendChild(row));
+            sortAsc = !sortAsc;
+        }
+
+        function del(btn) {
+            let row = btn.closest("tr");
+            let deliveryDateStr = row.cells[7].textContent.trim(); // 修正：原代码此处索引错误，配送日期是第7列（索引7）
+            let deliveryDate = new Date(deliveryDateStr);
+
+            let today = new Date("2025-12-28");
+            today.setHours(0,0,0,0);
+
+            let timeDiff = deliveryDate - today;
+            let dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            if (dayDiff < 2) {
+                alert("Cannot delete! Orders can only be deleted 2 days before the delivery date");
+                return;
+            }
+
+            if (confirm("Are you sure to delete?")) {
+                row.remove(); 
+                alert("Deleted successfully!");
+            }
+        }
+    </script>
+</body>
+</html>
