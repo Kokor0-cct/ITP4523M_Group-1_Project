@@ -276,7 +276,13 @@ button{
 }
 
 /* ==================== 查看我的订单(order.html） ==================== */
-
+        .empty-row{text-align:center;padding:30px;color:#666;}
+        .tag-pending{color:orange}
+        .tag-processing{color:blue}
+        .tag-shipped{color:purple}
+        .tag-arrive{color:green}
+        .tag-waitshipping{color:red}
+        
  .btn-box {
     display: flex;
     gap: 10px; /* 按钮之间固定间距 */
@@ -484,16 +490,16 @@ th
 
 
 .back-btn {
+    width: 10%;
     position: fixed;
     top: 70px;
     left: 20px;
     padding: 8px 16px;
     background: #6c757d;
     color: white;
-    border: none;
-    border-radius: 4px;
     cursor: pointer;
     z-index: 998;
+    margin:0dp;
 }
 .back-btn:hover {
     background: #5a6268;
@@ -701,8 +707,97 @@ th
     font-size: 18px;
 }
 
-
-
+.mask {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index:999;
+}
+.checkout-popup {
+    width: 600px;
+    background: #fff;
+    margin: 80px auto;
+    padding:25px;
+    border-radius:8px;
+}
+.popup-title {
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:15px;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+}
+.close-popup {
+    cursor:pointer;
+    color:#999;
+    font-size:24px;
+}
+.form-group {
+    margin:12px 0;
+}
+.form-group label {
+    display:block;
+    margin-bottom:4px;
+    font-weight:bold;
+}
+.form-group input {
+    width:100%;
+    box-sizing:border-box;
+    padding:8px;
+    border:1px #ccc solid;
+    border-radius:4px;
+}
+.popup-table {
+    width:100%;
+    border-collapse: collapse;
+    margin:10px 0 20px;
+}
+.popup-table td,.popup-table th {
+    border:1px #ddd solid;
+    padding:6px;
+}
+.empty-tip { 
+    text-align: center; 
+    color: #666; 
+    padding: 20px; 
+}
+.cancel-btn { 
+    background: #ff4444; 
+    color: white; 
+    border: none;
+    padding: 5px 10px; 
+    cursor: pointer; 
+}
+.submit-btn { 
+    background: #2196F3;
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    cursor: pointer; 
+    margin-top: 20px; 
+}
+.cart-total { 
+    margin-top: 10px; 
+    font-weight: bold; 
+}
+.msg { 
+    padding: 10px; 
+    margin: 10px 0; 
+    border-radius: 4px; 
+}
+.success { 
+    background: #dff0d8; 
+    color: #3c763d; 
+}
+.error { 
+    background: #f2dede; 
+    color: #a94442; 
+}
 /*-----------------------------------------------------------------------*/
 
 
