@@ -61,9 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Top Navigation Bar -->
     <div class="nav">
         <a href="productList.php">Browse products</a>
-        <a href="ShoppingCart.php"">shopping cart</a>
-        <a href="#">My Orders</a>
-        <a href="myAccount.php"">My account</a>
+        <a href="ShoppingCart.php">shopping cart</a>
+        <a href="order.php">My Orders</a>
+        <a href="myAccount.php">My account</a>
     </div>
 
     <div class="product-detail-container">

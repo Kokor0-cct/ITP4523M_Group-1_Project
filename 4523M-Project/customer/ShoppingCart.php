@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sql = "SELECT *  FROM furnitures WHERE fid='$fid'";
                     $rs = mysqli_query($conn, $sql);
                     $Stock = mysqli_fetch_assoc($rs);
+                    
                     $oldStock = $Stock['fStock'];
                     $NewStock = $oldStock - $qty;
 
@@ -97,7 +98,7 @@ $cartTotal = getCartTotal();
     <div class="nav">
         <a  href="productList.php">Browse products</a>
         <a class="active" href="ShoppingCart.php">shopping cart</a>
-        <a href="#">My Orders</a>
+        <a href="order.php">My Orders</a>
         <a href="myAccount.php">My account</a>
     </div>
     <div class="cart-container">
