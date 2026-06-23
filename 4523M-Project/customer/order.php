@@ -6,13 +6,13 @@ if (!isset($_SESSION['customer']) || !isset($_SESSION['CID'])) {
 }
 $cid = $_SESSION['CID'];
 $today = date('Y-m-d');
-// 数据库连接
 $host = 'localhost';
 $dbuser = 'root';
 $dbpass = '';
 $dbname = 'projectdb';
 $conn = mysqli_connect($host, $dbuser, $dbpass, $dbname);
 mysqli_set_charset($conn, 'utf8');
+
 if (!$conn) die("DB Connect Error: " . mysqli_connect_error());
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['oid'])) {
@@ -46,34 +46,27 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['oid'])
         exit;
     }
 
-    // ========== 新增逻辑1：恢复商品库存 ==========
-    // 1. 获取该订单下的所有商品及数量
     $getItemsSql = "SELECT fid, oqty FROM orderfurnitures WHERE oid = ?";
     $getItemsStmt = mysqli_prepare($conn, $getItemsSql);
     mysqli_stmt_bind_param($getItemsStmt, 'i', $delOid);
     mysqli_stmt_execute($getItemsStmt);
     $itemsRes = mysqli_stmt_get_result($getItemsStmt);
     
-    // 2. 循环恢复每个商品的库存
     while ($item = mysqli_fetch_assoc($itemsRes)) {
         $fid = $item['fid'];
         $oqty = $item['oqty'];
-        $CancelStock=
         $restoreStockSql = "UPDATE furnitures SET fStock = fStock + ? WHERE fid = ?";
         $restoreStockStmt = mysqli_prepare($conn, $restoreStockSql);
         mysqli_stmt_bind_param($restoreStockStmt, 'ii', $oqty, $fid);
         mysqli_stmt_execute($restoreStockStmt);
     }
 
-    // ========== 新增逻辑2：退回订单金额到用户账户 ==========
-    // 假设customers表有cbudget字段（用户余额），需根据实际字段名调整
     $orderTotal = $orderInfo['ototalamount'];
     $refundSql = "UPDATE customers SET cBudget = cBudget + ? WHERE cid = ?";
     $refundStmt = mysqli_prepare($conn, $refundSql);
     mysqli_stmt_bind_param($refundStmt, 'di', $orderTotal, $cid); // d=decimal, i=int
     mysqli_stmt_execute($refundStmt);
 
-    // ========== 原有删除逻辑 ==========
     $delItemSql = "DELETE FROM orderfurnitures WHERE oid = ?";
     $delItemStmt = mysqli_prepare($conn, $delItemSql);
     mysqli_stmt_bind_param($delItemStmt, 'i', $delOid);
@@ -89,7 +82,13 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['oid'])
     exit;
 }
 
-$sqlList = "SELECT * FROM orders WHERE cid = ?";
+$allowedSortFields = ['oid', 'odate', 'ototalamount', 'odeliverydate', 'ostatus'];
+
+$sortBy = isset($_GET['sortBy']) && in_array($_GET['sortBy'], $allowedSortFields) ? $_GET['sortBy'] : 'oid';
+$sortDir = isset($_GET['sortDir']) && $_GET['sortDir'] == 'asc' ? 'asc' : 'desc';
+$toggleDir = $sortDir == 'asc' ? 'desc' : 'asc';
+
+$sqlList = "SELECT * FROM orders WHERE cid = ? ORDER BY $sortBy $sortDir";
 $stmtList = mysqli_prepare($conn, $sqlList);
 mysqli_stmt_bind_param($stmtList, 'i', $cid);
 mysqli_stmt_execute($stmtList);
@@ -130,8 +129,6 @@ mysqli_close($conn);
     <title>My Orders</title>
     <link rel="stylesheet" href="../CSS/style.css">
     <style>
-
-        /* 弹窗遮罩 */
         .mask {
             <?php if($showModal): ?>display:flex;<?php else: ?>display:none;<?php endif; ?>
             position: fixed;
@@ -170,6 +167,20 @@ mysqli_close($conn);
         }
         .msg-success{color:green;margin:10px 0;}
         .msg-error{color:red;margin:10px 0;}
+        
+        .sortable-th {
+            cursor: pointer;
+            user-select: none;
+            padding: 5px;
+        }
+        .sortable-th:hover {
+            background-color: #f5f5f5;
+        }
+        .sort-arrow {
+            margin-left: 5px;
+            font-size: 12px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -192,12 +203,37 @@ mysqli_close($conn);
         <table border="1" width="100%">
             <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Order Date</th>
-                    <th>Total Amount</th>
-                    <th>Delivery Date</th>
+                    <th class="sortable-th" onclick="window.location.href='order.php?sortBy=oid&sortDir=<?= $sortBy == 'oid' ? $toggleDir : 'asc' ?>'">
+                        Order ID
+                        <?php if($sortBy == 'oid'): ?>
+                            <span class="sort-arrow"><?= $sortDir == 'asc' ? '↑' : '↓' ?></span>
+                        <?php endif; ?>
+                    </th>
+                    <th class="sortable-th" onclick="window.location.href='order.php?sortBy=odate&sortDir=<?= $sortBy == 'odate' ? $toggleDir : 'asc' ?>'">
+                        Order Date
+                        <?php if($sortBy == 'odate'): ?>
+                            <span class="sort-arrow"><?= $sortDir == 'asc' ? '↑' : '↓' ?></span>
+                        <?php endif; ?>
+                    </th>
+                    <th class="sortable-th" onclick="window.location.href='order.php?sortBy=ototalamount&sortDir=<?= $sortBy == 'ototalamount' ? $toggleDir : 'asc' ?>'">
+                        Total Amount
+                        <?php if($sortBy == 'ototalamount'): ?>
+                            <span class="sort-arrow"><?= $sortDir == 'asc' ? '↑' : '↓' ?></span>
+                        <?php endif; ?>
+                    </th>
+                    <th class="sortable-th" onclick="window.location.href='order.php?sortBy=odeliverydate&sortDir=<?= $sortBy == 'odeliverydate' ? $toggleDir : 'asc' ?>'">
+                        Delivery Date
+                        <?php if($sortBy == 'odeliverydate'): ?>
+                            <span class="sort-arrow"><?= $sortDir == 'asc' ? '↑' : '↓' ?></span>
+                        <?php endif; ?>
+                    </th>
                     <th>Delivery Address</th>
-                    <th>Order Status</th>
+                    <th class="sortable-th" onclick="window.location.href='order.php?sortBy=ostatus&sortDir=<?= $sortBy == 'ostatus' ? $toggleDir : 'asc' ?>'">
+                        Order Status
+                        <?php if($sortBy == 'ostatus'): ?>
+                            <span class="sort-arrow"><?= $sortDir == 'asc' ? '↑' : '↓' ?></span>
+                        <?php endif; ?>
+                    </th>
                     <th>Operation</th>
                 </tr>
             </thead>
@@ -229,9 +265,9 @@ mysqli_close($conn);
                             <span class="<?= $tagClass ?>"><?= $tagVal ?></span>
                         </td>
                         <td>
-                            <a href="order.php?oid=<?= $item['oid'] ?>" class="btn-info">Order Info</a>
+                            <a href="order.php?oid=<?= $item['oid'] ?>&sortBy=<?= $sortBy ?>&sortDir=<?= $sortDir ?>" class="btn-info">Order Info</a>
                             <?php if($canCancel): ?>
-                                <a class="btn-del" onclick="if(confirm('Are you sure to cancel this order?')) window.location.href='order.php?action=delete&oid=<?= $item['oid'] ?>'">Cancel Order</a>
+                                <a class="btn-del" onclick="if(confirm('Are you sure to cancel this order?')) window.location.href='order.php?action=delete&oid=<?= $item['oid'] ?>&sortBy=<?= $sortBy ?>&sortDir=<?= $sortDir ?>'">Cancel Order</a>
                             <?php else: ?>
                                 <a class="btn-del" disabled style="background:#aaa;cursor:not-allowed;">Cannot Cancel</a>
                             <?php endif; ?>
@@ -248,7 +284,7 @@ mysqli_close($conn);
         <div class="modal-box">
             <div class="modal-head">
                 <h3>Complete Order Information</h3>
-                <a href="order.php" class="close-btn">×</a>
+                <a href="order.php?sortBy=<?= $sortBy ?>&sortDir=<?= $sortDir ?>" class="close-btn">×</a>
             </div>
             <div class="info-line"><span class="info-label">Order ID:</span><?= $detailOrder['oid'] ?></div>
             <div class="info-line"><span class="info-label">Order Date:</span><?= $detailOrder['odate'] ?></div>
