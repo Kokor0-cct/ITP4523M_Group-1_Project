@@ -23,6 +23,11 @@ if (isset($_POST['login'])) {
         if ($pwd == $row['cpassword']) {
             session_start();
             $_SESSION['customer'] = $row['cname'];
+            $_SESSION['CAddress'] = $row['caddr'];
+            $_SESSION['CPhone'] = $row['ctel'];
+            $_SESSION['CID'] = $row['cid'];
+            $_SESSION['cBudget'] = $row['cBudget'];
+
             header("Location: productList.php");
             exit;
         } else {

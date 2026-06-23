@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../Function/Cart.php';
 if (!isset($_SESSION['customer'])) {
     header("Location: customerLogin.php");
     exit;
@@ -33,6 +33,15 @@ $fprice = $productInfo['fprice'];
 $fdesc = $productInfo['fdesc'];
 $fStock = $productInfo['fStock'];
 $fImgPath = $productInfo['fImgPath'];
+$fSize = $productInfo['fSize'];
+
+$msg="";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $addQty = $_POST['quantity'];
+    addToCart( $fid, $fname,$fprice,$addQty);
+    $msg = "Add Suggessful!";
+
+}
 ?>
 
 
@@ -52,9 +61,9 @@ $fImgPath = $productInfo['fImgPath'];
     <!-- Top Navigation Bar -->
     <div class="nav">
         <a href="productList.php">Browse products</a>
-        <a href="#">shopping cart</a>
+        <a href="ShoppingCart.php"">shopping cart</a>
         <a href="#">My Orders</a>
-        <a href="#">My account</a>
+        <a href="myAccount.php"">My account</a>
     </div>
 
     <div class="product-detail-container">
@@ -72,61 +81,22 @@ $fImgPath = $productInfo['fImgPath'];
  
             <div class="product-stock" id="stockInfo">Stock Quantity: <?php echo $fStock; ?> pieces</div>
 
-
-            <div class="custom-type">
-                <label>
-                    <input type="radio" name="customMode" value="normal" checked onchange="toggleCustomMode()"> Normal
-                </label>
-                <label>
-                    <input type="radio" name="customMode" value="custom" onchange="toggleCustomMode()"> Customized
-                </label>
-            </div>
-
-
-            <div class="custom-option">
-                <label for="material">Material Selection</label>
-                <select id="material" class="custom-select" disabled>
-                    <option value="oak" selected>Oak (Default)</option>
-                    <option value="walnut">Birch</option>
-                    <option value="teak">Pine</option>
-                </select>
-            </div>
-
-            <div class="custom-option">
-                <label for="fabric">Fabric Material</label>
-                <select id="fabric" class="custom-select" disabled>
-                    <option value="linen" selected>Linen Fabric (Default)</option>
-                    <option value="cotton">Pure Cotton Fabric</option>
-                    <option value="leather">Technology Fabric</option>
-                </select>
-            </div>
-
-            <div class="custom-option">
-                <label for="color">Material Selection2</label>
-                <select id="color" class="custom-select" disabled>
-                    <option value="natural" selected>None</option>
-                    <option value="coffee">Metal</option>
-                    <option value="white">Plastic</option>
-                </select>
-            </div>
-
-            <div class="custom-option">
-                <label for="size">Size Specification</label>
-                <select id="size" class="custom-select" disabled>
-                    <option value="three" selected>Single Seat (85*85*90cm) (Default)</option>
-                    <option value="two">Two Seats (150*85*90cm)</option>
-                    <option value="single">Three Seats (210*85*90cm)</option>
-                </select>
-            </div>
-
-
             <div class="quantity-control">
-                <label for="quantity">Purchase Quantity</label>
-                <input type="number" id="quantity" class="quantity-input" min="1" max="8" value="1">
+                <label for="size">Size Specification</label>
+                    <input type="text" readonly value="<?php echo $fSize; ?>" selected>
+
             </div>
 
+            <form  method="POST" action="">
+                <div class="quantity-control">
+                    <label for="quantity">Purchase Quantity</label>
+                    <input type="number" name="quantity" class="quantity-input" min="1" max="999" value="1">
+                </div>
+                <button type="submit" class="add-cart-btn" >Add to Cart</button>
+            </form>
+            <div name="message" style="color: green;"> <?php echo $msg ?></div> 
 
-            <button class="add-cart-btn" id="addToCartBtn" onclick="return addToCart()">Add to Cart</button>
+            
         </div>
     </div>
 
@@ -134,72 +104,6 @@ $fImgPath = $productInfo['fImgPath'];
 
         function goBack() {
             window.location.href = 'productList.php';
-        }
-
-
-        function toggleCustomMode() {
-
-            const selectedMode = document.querySelector('input[name="customMode"]:checked').value;
-   
-            const customSelects = document.querySelectorAll('.custom-select');
-            
-            const isDisabled = selectedMode === 'normal';
-            customSelects.forEach(select => {
-                select.disabled = isDisabled;
-                select.selectedIndex = 0;
-            });
-        }
-
-    
-        function addToCart() {
-   
-            const stockInfoText = document.getElementById('stockInfo').textContent;
-            const stock = parseInt(stockInfoText.replace(/[^0-9]/g, '')); 
-
-            const quantityInput = document.getElementById('quantity');
-            const buyQuantity = parseInt(quantityInput.value);
-
-            if (isNaN(buyQuantity)) {
-                alert('Please enter a valid purchase quantity!');
-                quantityInput.value = 1;
-                return false;
-            }
-
-            if (buyQuantity > stock) {
-                alert(`Insufficient stock! Current stock is only ${stock} pieces, unable to purchase ${buyQuantity} pieces.`);
-                quantityInput.value = stock;
-                return false;
-            }
-            if (buyQuantity < 1) {
-                alert('Please enter a valid purchase quantity!');
-                quantityInput.value = 1; 
-                return false;
-            } 
-            alert(`Added to cart successfully!`);
-        }
-
-
-        function logout() {
-            if (confirm('Are you sure to log out?')) {
-                alert('Logout successful! Redirecting to login page shortly');
-                window.location.href = 'customerLogin.html';
-            }
-        }
-
-        function productPage(){
-            window.location.href = 'prodecuList.html';
-        }
-
-        function AccountPage(){
-            window.location.href = 'myAccount.html';
-        }
-
-        function orderPage(){
-            window.location.href = 'order.html';
-        }
-
-        function cartPage(){
-            window.location.href = 'cart.html'; 
         }
 
     </script>

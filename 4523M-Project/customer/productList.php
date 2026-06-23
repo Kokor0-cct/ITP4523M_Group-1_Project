@@ -21,6 +21,7 @@ $productArray = [];
 while ($row = mysqli_fetch_assoc($rs)) {
     $productArray[] = $row;
 }
+
 mysqli_close($conn);
 ?>
 
@@ -42,7 +43,7 @@ mysqli_close($conn);
 
     <div class="nav">
         <a class="active" href="productList.php">Browse products</a>
-        <a href="#">shopping cart</a>
+        <a href="ShoppingCart.php">shopping cart</a>
         <a href="#">My Orders</a>
         <a href="myAccount.php">My account</a>
     </div>
